@@ -13,32 +13,25 @@ import java.util.List;
 public class BoardRepository {
     private final EntityManager em;
 
-    public Board update(String title, String content, int id){
-        Query query = em.createNativeQuery("UPDATE * board_tb SET title = ?, content =? WHERE id = ?", Board.class);
+    public void update(String title, String content, int id){
+        Query query = em.createNativeQuery("UPDATE board_tb " +
+                "SET title = ?, content =? WHERE id = ?");
 
         query.setParameter(1, title);
         query.setParameter(2, content);
         query.setParameter(3, id);
 
-        try {
-            Board board = (Board) query.getSingleResult();
-            return board;
-        } catch (Exception e) {
-            return null;
-        }
+        query.executeUpdate();
     }
-    public Board delete(int id){
-        Query query = em.createNativeQuery("UPDATE * board_tb SET title = ?, content =? WHERE id = ?", Board.class);
 
+    public void delete(int id){
+        Query query = em.createNativeQuery("DELETE FROM board_tb " +
+                "WHERE id = ?");
         query.setParameter(1, id);
 
-        try {
-            Board board = (Board) query.getSingleResult();
-            return board;
-        } catch (Exception e) {
-            return null;
-        }
+        query.executeUpdate();
     }
+
     public List<Board> selectALL (int id){
         Query query = em.createNativeQuery("SELECT * FROM board_tb ", Board.class);
 
@@ -48,7 +41,8 @@ public class BoardRepository {
     }
 
     public Board selectOne(int id){
-        Query query = em.createNativeQuery("SELECT * FROM board_tb WHERE id = ?", Board.class);
+        Query query = em.createNativeQuery("SELECT * FROM board_tb " +
+                "WHERE id = ?", Board.class);
         query.setParameter(1, id);
 
         try {
@@ -61,7 +55,8 @@ public class BoardRepository {
 
     @Transactional
     public void insert(String title, String content, String author){
-        Query query = em.createNativeQuery("INSERT INTO board_tb(title, content, author) VALUES (?, ?, ?)");
+        Query query = em.createNativeQuery("INSERT INTO board_tb(title, content, author) " +
+                "VALUES (?, ?, ?)");
         query.setParameter(1, title);
         query.setParameter(2, content);
         query.setParameter(3, author);
